@@ -1,8 +1,16 @@
 import sys
+import os
 import logging
+from datetime import datetime
+
+# Ensure the logs directory exists
+log_dir = os.path.join(os.getcwd(), "logs")
+os.makedirs(log_dir, exist_ok=True)
 
 # Configure logging
+LOG_FILE = os.path.join(log_dir, f"{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}.log")
 logging.basicConfig(
+    filename=LOG_FILE,
     format="[ %(asctime)s ]  %(lineno)d %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
@@ -28,7 +36,10 @@ if __name__ == "__main__":
         a = 1 / 0
     except Exception as e:
         logging.info("Divide by zero error")
-        raise CustomException(e, sys)
+        try:
+            raise CustomException(e, sys)
+        except CustomException as ce:
+            logging.error(str(ce))
 
 
 
